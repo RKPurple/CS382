@@ -41,9 +41,42 @@ LOOP:                // go to label
     return tot;
 }
 
-void sort_nib(int *arr)
+void sort_nib(int *arr, int length)
 {
     char *bytes = (char *)arr;
+    for (int i = 0; i < (length * 4); i++)
+    {
+        char first_nib = (*(bytes + i) >> 4) & 0x0F;
+        char second_nib = (*(bytes + i)) & 0x0F;
+    LOOP:
+        if (first_nib < second_nib)
+        {
+            *(bytes + i) = (second_nib << 4) | (first_nib);
+            first_nib = (*(bytes + i) >> 4) & 0x0F;
+            second_nib = (*(bytes + i)) & 0x0F;
+        }
+        for (int j = i + 1; j < (length * 4); j++)
+        {
+            char next_second_nib = (*(bytes + j)) & 0x0F;
+            char next_first_nib = (*(bytes + j) >> 4) & 0x0F;
+            if (next_second_nib < first_nib)
+            {
+                *(bytes + j) = (next_first_nib << 4) | (first_nib);
+                *(bytes + i) = (next_second_nib << 4) | (second_nib);
+                first_nib = (*(bytes + i) >> 4) & 0x0F;
+                second_nib = (*(bytes + i)) & 0x0F;
+                goto LOOP;
+            }
+            if (next_first_nib < first_nib)
+            {
+                *(bytes + j) = (first_nib << 4) | (next_second_nib);
+                *(bytes + i) = (next_first_nib << 4) | (second_nib);
+                first_nib = (*(bytes + i) >> 4) & 0x0F;
+                second_nib = (*(bytes + i)) & 0x0F;
+                goto LOOP;
+            }
+        }
+    }
 }
 
 int main()
@@ -61,10 +94,10 @@ int main()
     printf("%d\n", dot);
 
     int arr[3] = {0x12BFDA09, 0x9089CDBA, 0x56788910};
-    sort_nib(arr);
+    sort_nib(arr, 3);
     for (int i = 0; i < 3; i++)
     {
-        printf("0x%x ", arr[i]);
+        printf("0x%08x ", arr[i]);
     }
     puts(" ");
 
