@@ -2,6 +2,7 @@
 // I pledge my honor that I have abided by the Stevens Honor System.
 .text
 .global _start
+.extern printf
 
 _start:
     ADR X0, vec1 //Load vec1 array Address into register
@@ -18,7 +19,7 @@ _start:
     MUL X10, X6, X7 // Multiply the third two elements of the array and then add the value stored in X9 and load it into X10
     ADD X11, X8, X9 // Add the products stored in register X8 and X9 into the register X11
     ADD X12, X11, X10 // Add the sum of the first two elements respective products in reg X11, with X10 the product of the third elements into reg X12 
-    STUR X12, [X16] // Store the value in register X10 into the variable dot at address X16
+    STUR X12, [X16] // Store the value in register X12 into the variable dot at address X16
 
     /* Exit Function */
     MOV X0, 0 /* status := 0 */
