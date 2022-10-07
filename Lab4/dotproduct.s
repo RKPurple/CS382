@@ -21,6 +21,7 @@ _start:
     ADD X12, X11, X10 // Add the sum of the first two elements respective products in reg X11, with X10 the product of the third elements into reg X12 
     STUR X12, [X16] // Store the value in register X12 into the variable dot at address X16
 
+    end:
     /* Exit Function */
     MOV X0, 0 /* status := 0 */
     MOV X8, 93 /* exit is syscall #1 */
