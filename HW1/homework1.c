@@ -43,39 +43,48 @@ LOOP:                // go to label
 
 void sort_nib(int *arr, int length)
 {
-    char *bytes = (char *)arr;
-    for (int i = 0; i < (length * 4); i++)
+    char *bytes = (char *)arr; // Convert to Char array
+
+    for (int i = 0; i < (length * 4); i++) // Loop through the individual bytes of the array
     {
-        char first_nib = (*(bytes + i) >> 4) & 0x0F;
-        char second_nib = (*(bytes + i)) & 0x0F;
+        char first_nib = (*(bytes + i) >> 4) & 0x0F; // store first 4 binary digits
+        char second_nib = (*(bytes + i)) & 0x0F;     // store second 4 binary digits
     LOOP:
-        if (first_nib < second_nib)
+        if (first_nib > second_nib) // If the first four binary digits are greater than the second 4 swap them
         {
-            *(bytes + i) = (second_nib << 4) | (first_nib);
-            first_nib = (*(bytes + i) >> 4) & 0x0F;
+            *(bytes + i) = (second_nib << 4) | (first_nib); // swap the bytes by oring the two chars
+            first_nib = (*(bytes + i) >> 4) & 0x0F;         // update first and second
             second_nib = (*(bytes + i)) & 0x0F;
         }
-        for (int j = i + 1; j < (length * 4); j++)
+        for (int j = i + 1; j < (length * 4); j++) // loop until you find an element greater than first_nib than swap accordingly
         {
-            char next_second_nib = (*(bytes + j)) & 0x0F;
+            char next_second_nib = (*(bytes + j)) & 0x0F; // check the next bytes binary digits
             char next_first_nib = (*(bytes + j) >> 4) & 0x0F;
-            if (next_second_nib < first_nib)
+            if (next_second_nib > first_nib) // swap the places of the first nib of original byte with the second nib of the one your crosschecking
             {
-                *(bytes + j) = (next_first_nib << 4) | (first_nib);
+                *(bytes + j) = (next_first_nib << 4) | (first_nib); // update both bytes
                 *(bytes + i) = (next_second_nib << 4) | (second_nib);
-                first_nib = (*(bytes + i) >> 4) & 0x0F;
+                first_nib = (*(bytes + i) >> 4) & 0x0F; // update first and second nib
                 second_nib = (*(bytes + i)) & 0x0F;
-                goto LOOP;
+                goto LOOP; // return to top loop
             }
-            if (next_first_nib < first_nib)
+            if (next_first_nib > first_nib) // swap the places of the first nib of original byte with the second nib of the one your crosschecking
             {
-                *(bytes + j) = (first_nib << 4) | (next_second_nib);
+                *(bytes + j) = (first_nib << 4) | (next_second_nib); // update both bytes
                 *(bytes + i) = (next_first_nib << 4) | (second_nib);
-                first_nib = (*(bytes + i) >> 4) & 0x0F;
+                first_nib = (*(bytes + i) >> 4) & 0x0F; // update first and second nib
                 second_nib = (*(bytes + i)) & 0x0F;
-                goto LOOP;
+                goto LOOP; // return to top loop
             }
         }
+    }
+    int end = length - 1; // reverse the array cuz im kewl like that 😎
+    for (int i = 0; i < length / 2; i++)
+    {
+        int store = *(arr + i);
+        *(arr + i) = *(arr + end);
+        *(arr + end) = store;
+        end--;
     }
 }
 
